@@ -65,14 +65,6 @@ def extract_body_content(html_content):
 def clean_body_content(body_content):
     """Làm sạch nội dung, loại bỏ script, style, header, footer, nav và các div có class 'header' hoặc 'footer'."""
     soup = BeautifulSoup(body_content, "html.parser")
-    img_src=""
-    container = soup.find("div", class_="product-view-image-product fhs_img_frame_container")
-    if container:
-        img_tag = container.find("img")
-        if img_tag:
-            img_src= img_tag.get("data-src") or img_tag.get("src")
-
-    # Lấy nội dung văn bản và làm sạch khoảng trắng
     cleaned_content = soup.get_text(separator="\n")
     cleaned_content = "\n".join(
         line.strip() for line in cleaned_content.splitlines() if line.strip()
