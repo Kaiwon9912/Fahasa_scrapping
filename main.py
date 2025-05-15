@@ -3,8 +3,8 @@ from scrape import scrape_website, extract_body_content, clean_body_content, ext
 from format import extract_book_data_and_export_to_excel
 
 output_file = "book_data.csv"
-start_page = 4
-end_page = 300
+start_page = 1
+end_page = 10
 
 total_links = 0
 total_time = 0
@@ -23,6 +23,7 @@ for i in range(start_page, end_page):
             body_content = extract_body_content(dom_content)
             img_src = extract_image_src(dom_content)
             cleaned_content = img_src + "\n" + clean_body_content(body_content)
+            print(cleaned_content)
             extract_book_data_and_export_to_excel(cleaned_content, output_file)
 
         except Exception as e:

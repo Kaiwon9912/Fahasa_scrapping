@@ -50,16 +50,17 @@ def extract_body_content(html_content):
     """Trích xuất nội dung body từ HTML"""
     soup = BeautifulSoup(html_content, "html.parser")
 
-    # Tìm tất cả các div có 1 trong 2 class
-    content_divs = soup.select("div.block-info-detail-mobile, div.block-product-view-mobile, div.block-info-detail-2-mobile" )
+    content_divs = soup.select("div.block-info-detail-mobile, div.block-product-view-mobile, div.block-info-detail-2-mobile, div.breadcrumbs li[class='1']" )
 
     if not content_divs:
         return ""
-
+    
     # Gộp toàn bộ HTML lại
     combined_html = "".join(str(div) for div in content_divs)
-
+    
     return combined_html
+
+
 
 
 def clean_body_content(body_content):
