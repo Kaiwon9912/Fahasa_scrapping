@@ -1,6 +1,5 @@
 import re
 import pandas as pd
-import os
 
 CATEGORY_MAP = {
     "Thiếu nhi": 1,
@@ -28,13 +27,10 @@ CATEGORY_MAP = {
     "Mystery Box": 23
 }
 
-
-
-def extract_book_data_and_export_to_excel(text, output_file):
+def extract_book_data(text):
+    """Trích xuất dữ liệu sách từ text, trả về dict"""
     result = {}
-
     lines = text.strip().split('\n')
-
 
     if len(lines) >= 1:
         result["cover_url"] = lines[0]
@@ -48,17 +44,15 @@ def extract_book_data_and_export_to_excel(text, output_file):
         title_line = lines[3]
         if any(x in title_line for x in ["Bộ", "Combo"]):
             print("Bỏ qua bộ và combo")
-            return
+            return None
         result["title"] = title_line
-
 
     # Giá bán (special price)
     special_price = re.search(r"Special Price\s+([\d\.]+)\s?đ", text)
     if special_price:
         raw_price = special_price.group(1)
-        clean_price = raw_price.replace(".", "")  # Xóa dấu chấm
+        clean_price = raw_price.replace(".", "")
         result["price"] = clean_price
-
 
     # Các trường cố định
     fields = {
@@ -87,17 +81,4 @@ def extract_book_data_and_export_to_excel(text, output_file):
         desc = desc_match.group(1).strip()
         result["description"] = re.sub(r"\n{2,}", "\n", desc)
 
-    # Tạo DataFrame cho dòng mới
-    new_row = pd.DataFrame([result])
-
-    # Nếu file đã tồn tại, đọc và nối thêm dữ liệu mới
-    if os.path.exists(output_file):
-        existing_df = pd.read_csv(output_file)
-        final_df = pd.concat([existing_df, new_row], ignore_index=True)
-    else:
-        final_df = new_row
-
-    # Ghi lại toàn bộ file
-    final_df.to_csv(output_file, index=False, encoding="utf-8-sig")
-
-    print(f"✔ Đã thêm dữ liệu vào file {output_file}")
+    return result
